@@ -72,7 +72,7 @@ public class complexKeypads : MonoBehaviour
 
     void Init()
     {
-        symbolRow = UnityEngine.Random.Range(1, 6);
+        symbolRow = UnityEngine.Random.Range(1, 6); //Log this
         setupSymbols();
         setupButtons();
         setupPressOrder();
@@ -193,15 +193,15 @@ public class complexKeypads : MonoBehaviour
 
         if (info.GetBatteryCount() > 2 && info.IsPortPresent(KMBombInfoExtensions.KnownPortType.Parallel))
         {
-            ruleInUse = 1;
+            ruleInUse = 1;//Log this
         }
         else if (info.IsPortPresent(KMBombInfoExtensions.KnownPortType.DVI) && info.IsIndicatorOn(KMBombInfoExtensions.KnownIndicatorLabel.BOB))
         {
-            ruleInUse = 2;
+            ruleInUse = 2;//Log this
         }
         else
         {
-            ruleInUse = 3;
+            ruleInUse = 3;//Log this
         }
 
         for (int i = 0; i < 9; i++)
@@ -213,11 +213,11 @@ public class complexKeypads : MonoBehaviour
     void setupPressOrder()
     {
         switch (ruleInUse)
-        {
+        {//Log this
             case 1:
                 for (int i = 0; i < 9; i++)
                 {
-                    buttonPressOrder[i] = i;
+                    buttonPressOrder[i] = i;//Log this
                 }
                 break;
             case 2:
@@ -262,7 +262,7 @@ public class complexKeypads : MonoBehaviour
                         if (list[j] == i)
                         {
                             buttonPressOrder[Array.IndexOf(btnSymbolSet, i)] = j;
-                            break;
+                            break;//Log this
                         }
                     }
                 }
@@ -303,7 +303,7 @@ public class complexKeypads : MonoBehaviour
                         {
                             buttonPressOrder[Array.IndexOf(btnSymbolSetX, i)] = j;
                             break;
-                        }
+                        }//Log this
                     }
                 }
                 break;
@@ -323,10 +323,10 @@ public class complexKeypads : MonoBehaviour
         if(buttonPressOrder[pressIndex] == btnIndex)
         {
             pressIndex++;
-            leds[btnIndex].material = green;
+            leds[btnIndex].material = green;//Log this
         } else
         {
-            module.HandleStrike();
+            module.HandleStrike();//Log this
             pressIndex = 0;
             for (int i = 0; i < 9; i++)
             {
@@ -338,7 +338,7 @@ public class complexKeypads : MonoBehaviour
         if(pressIndex == 9)
         {
             module.HandlePass();
-            _isSolved = true;
+            _isSolved = true;//Log this
             newAudio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.CorrectChime, btn[btnIndex].transform);
         }
     }
