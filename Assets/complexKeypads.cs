@@ -72,7 +72,8 @@ public class complexKeypads : MonoBehaviour
 
     void Init()
     {
-        symbolRow = UnityEngine.Random.Range(1, 6); //Log this
+        symbolRow = UnityEngine.Random.Range(1, 6);
+        Debug.LogFormat("[Complex Keypad #{0}] Random symbol row selected: {1}", _moduleId, symbolRow);
         setupSymbols();
         setupButtons();
         setupPressOrder();
@@ -175,7 +176,7 @@ public class complexKeypads : MonoBehaviour
                 break;
             default:
                 symbolSet = one;
-                Debug.LogFormat("[Complex Keypads #{0}] Symbol row not selected correctly! Random row returned {1}", _moduleId, symbolRow);
+                Debug.LogFormat("[Complex Keypad #{0}] Symbol row not selected correctly! Random row returned {1}", _moduleId, symbolRow);
                 break;
         }
 
@@ -193,15 +194,18 @@ public class complexKeypads : MonoBehaviour
 
         if (info.GetBatteryCount() > 2 && info.IsPortPresent(KMBombInfoExtensions.KnownPortType.Parallel))
         {
-            ruleInUse = 1;//Log this
+            ruleInUse = 1;
+            Debug.LogFormat("[Complex Keypad #{0}] Battery count: {1}. Contains Parallel: True. Rule 1 in use (disregard chart, press left - right on module)", _moduleId, info.GetBatteryCount());
         }
         else if (info.IsPortPresent(KMBombInfoExtensions.KnownPortType.DVI) && info.IsIndicatorOn(KMBombInfoExtensions.KnownIndicatorLabel.BOB))
         {
-            ruleInUse = 2;//Log this
+            ruleInUse = 2;
+            Debug.LogFormat("[Complex Keypad #{0}] Battery count: {1}. Contains DVI: True. Lit indicator BOB: True. Rule 2 in use (press right - left according to chart)", _moduleId, info.GetBatteryCount());
         }
         else
         {
-            ruleInUse = 3;//Log this
+            ruleInUse = 3;
+            Debug.LogFormat("[Complex Keypad #{0}] Battery count: {1}. Does not contain Parallel or DVI port. Rule 3 in use (press left - right according to chart)", _moduleId, info.GetBatteryCount());
         }
 
         for (int i = 0; i < 9; i++)
@@ -213,12 +217,13 @@ public class complexKeypads : MonoBehaviour
     void setupPressOrder()
     {
         switch (ruleInUse)
-        {//Log this
+        {
             case 1:
                 for (int i = 0; i < 9; i++)
                 {
-                    buttonPressOrder[i] = i;//Log this
+                    buttonPressOrder[i] = i;
                 }
+                Debug.LogFormat("[Complex Keypad #{0}] Button press order: 1:{1}({2}), 2:{3}({4}), 3:{5}({6}), 4:{7}({8}), 5:{9}({10}), 6:{11}({12}), 7:{13}({14}), 8:{15}({16}), 9:{17}({18})", _moduleId, buttonPressOrder[0], buttonStrings[buttonPressOrder[0]], buttonPressOrder[1], buttonStrings[buttonPressOrder[1]], buttonPressOrder[2], buttonStrings[buttonPressOrder[2]], buttonPressOrder[3], buttonStrings[buttonPressOrder[3]], buttonPressOrder[4], buttonStrings[buttonPressOrder[4]], buttonPressOrder[5], buttonStrings[buttonPressOrder[5]], buttonPressOrder[6], buttonStrings[buttonPressOrder[6]], buttonPressOrder[7], buttonStrings[buttonPressOrder[7]], buttonPressOrder[8], buttonStrings[buttonPressOrder[8]]);
                 break;
             case 2:
                 int[] reverseSet = symbolSet;
@@ -262,10 +267,11 @@ public class complexKeypads : MonoBehaviour
                         if (list[j] == i)
                         {
                             buttonPressOrder[Array.IndexOf(btnSymbolSet, i)] = j;
-                            break;//Log this
+                            break;
                         }
                     }
                 }
+                Debug.LogFormat("[Complex Keypad #{0}] Button press order: 1:{1}({2}), 2:{3}({4}), 3:{5}({6}), 4:{7}({8}), 5:{9}({10}), 6:{11}({12}), 7:{13}({14}), 8:{15}({16}), 9:{17}({18})", _moduleId, buttonPressOrder[0], buttonStrings[buttonPressOrder[0]], buttonPressOrder[1], buttonStrings[buttonPressOrder[1]], buttonPressOrder[2], buttonStrings[buttonPressOrder[2]], buttonPressOrder[3], buttonStrings[buttonPressOrder[3]], buttonPressOrder[4], buttonStrings[buttonPressOrder[4]], buttonPressOrder[5], buttonStrings[buttonPressOrder[5]], buttonPressOrder[6], buttonStrings[buttonPressOrder[6]], buttonPressOrder[7], buttonStrings[buttonPressOrder[7]], buttonPressOrder[8], buttonStrings[buttonPressOrder[8]]);
                 break;
             case 3:
                 int removalX = 0;
@@ -303,9 +309,10 @@ public class complexKeypads : MonoBehaviour
                         {
                             buttonPressOrder[Array.IndexOf(btnSymbolSetX, i)] = j;
                             break;
-                        }//Log this
+                        }
                     }
                 }
+                Debug.LogFormat("[Complex Keypad #{0}] Button press order: 1:{1}({2}), 2:{3}({4}), 3:{5}({6}), 4:{7}({8}), 5:{9}({10}), 6:{11}({12}), 7:{13}({14}), 8:{15}({16}), 9:{17}({18})", _moduleId, buttonPressOrder[0], buttonStrings[buttonPressOrder[0]], buttonPressOrder[1], buttonStrings[buttonPressOrder[1]], buttonPressOrder[2], buttonStrings[buttonPressOrder[2]], buttonPressOrder[3], buttonStrings[buttonPressOrder[3]], buttonPressOrder[4], buttonStrings[buttonPressOrder[4]], buttonPressOrder[5], buttonStrings[buttonPressOrder[5]], buttonPressOrder[6], buttonStrings[buttonPressOrder[6]], buttonPressOrder[7], buttonStrings[buttonPressOrder[7]], buttonPressOrder[8], buttonStrings[buttonPressOrder[8]]);
                 break;
         }
     }
@@ -323,10 +330,13 @@ public class complexKeypads : MonoBehaviour
         if(buttonPressOrder[pressIndex] == btnIndex)
         {
             pressIndex++;
-            leds[btnIndex].material = green;//Log this
+            leds[btnIndex].material = green;
+            Debug.LogFormat("[Complex Keypad #{0}] Correct button pressed. Input recieved: button at index {1}.",_moduleId, btnIndex);
         } else
         {
-            module.HandleStrike();//Log this
+            module.HandleStrike();
+            Debug.LogFormat("[Complex Keypad #{0}] Incorrect button pressed. Expected: {1}. Recieved: {2}.",_moduleId, buttonPressOrder[pressIndex], btnIndex);
+            Debug.LogFormat("[Complex Keypad #{0}] If you feel that this strike is an error, please contact AAces as soon as possible so we can get this error sorted out. Have a copy of this log file handy. Discord: AAces#3889", _moduleId);
             pressIndex = 0;
             for (int i = 0; i < 9; i++)
             {
@@ -338,7 +348,8 @@ public class complexKeypads : MonoBehaviour
         if(pressIndex == 9)
         {
             module.HandlePass();
-            _isSolved = true;//Log this
+            _isSolved = true;
+            Debug.LogFormat("[Complex Keypad #{0}] Module solved!",_moduleId);
             newAudio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.CorrectChime, btn[btnIndex].transform);
         }
     }
