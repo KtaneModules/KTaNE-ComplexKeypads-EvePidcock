@@ -13,13 +13,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: complexKeypad
   title: Complex Keypad
-  description: 'As if having four buttons wasn''t enough.
-
-
-    moduleID: complexKeypad
-
-
-    Module idea and creation: AAces'
+  description: "As if having four buttons wasn't enough.\r\n\r\nManual link: https://ktane.timwi.de/HTML/Complex%20Keypads.html\r\nPDF:\r\nhttps://ktane.timwi.de/PDF/Complex%20Keypad.pdf\r\n\r\nmoduleID:
+    complexKeypad\r\n\r\nLink to Github: https://github.com/AAces/KTaNE-ComplexKeypads\r\n\r\nModule
+    idea and creation: AAces"
   version: 1.2
   outputFolder: build
   previewImage: {fileID: 2800000, guid: 2221d216d0ae059469df750efd65c4f7, type: 3}

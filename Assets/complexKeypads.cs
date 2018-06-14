@@ -205,7 +205,7 @@ public class complexKeypads : MonoBehaviour
         else
         {
             ruleInUse = 3;
-            Debug.LogFormat("[Complex Keypad #{0}] Battery count: {1}. Does not contain Parallel or DVI port. Rule 3 in use (press left - right according to chart)", _moduleId, info.GetBatteryCount());
+            Debug.LogFormat("[Complex Keypad #{0}] Battery count: {1}. Does not contain match either prior rule. Rule 3 in use (press left - right according to chart)", _moduleId, info.GetBatteryCount());
         }
 
         for (int i = 0; i < 9; i++)
@@ -234,7 +234,7 @@ public class complexKeypads : MonoBehaviour
                     reverseSet[reverseSet.Length - i - 1] = tmp;
                 }
                 int removal = 0;
-                for (int i = 0; i < 9; i++)
+                for (int i = 0; i < 10; i++)
                 {
                     if (!list.Contains(reverseSet[i]))
                     {
@@ -242,6 +242,7 @@ public class complexKeypads : MonoBehaviour
                         break;
                     }
                 }
+                Debug.LogFormat("[Complex Keypad #{0}] Symbol removed from manual's list: {1}", _moduleId, symbols[reverseSet[removal]]);
                 int[] btnSymbolSet = new int[9];
                 bool t = false;
                 for (int i = 0; i < 10; i++)
@@ -275,7 +276,7 @@ public class complexKeypads : MonoBehaviour
                 break;
             case 3:
                 int removalX = 0;
-                for (int i = 0; i < 9; i++)
+                for (int i = 0; i < 10; i++)
                 {
                     if (!list.Contains(symbolSet[i]))
                     {
@@ -283,6 +284,7 @@ public class complexKeypads : MonoBehaviour
                         break;
                     }
                 }
+                Debug.LogFormat("[Complex Keypad #{0}] Symbol removed from manual's list: {1}", _moduleId, symbols[symbolSet[removalX]]);
                 int[] btnSymbolSetX = new int[9];
                 bool tX = false;
                 for (int i = 0; i < 10; i++)
@@ -336,7 +338,7 @@ public class complexKeypads : MonoBehaviour
         {
             module.HandleStrike();
             Debug.LogFormat("[Complex Keypad #{0}] Incorrect button pressed. Expected: {1}. Recieved: {2}.",_moduleId, buttonPressOrder[pressIndex], btnIndex);
-            Debug.LogFormat("[Complex Keypad #{0}] If you feel that this strike is an error, please contact AAces as soon as possible so we can get this error sorted out. Have a copy of this log file handy. Discord: AAces#3889", _moduleId);
+            Debug.LogFormat("[Complex Keypad #{0}] If you feel that this strike is an error, please contact AAces as soon as possible so we can get this error sorted out. Have a copy of this log file handy. Discord: AAces#0908", _moduleId);
             pressIndex = 0;
             for (int i = 0; i < 9; i++)
             {
