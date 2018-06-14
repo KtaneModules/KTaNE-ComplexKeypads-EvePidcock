@@ -362,4 +362,89 @@ public class complexKeypads : MonoBehaviour
         yield return new WaitForSeconds(2.0f);
         resetGame();
     }
+#pragma warning disable 414
+	private string TwitchHelpMessage = "Use !{0} press TL TM TR to press the top left button, the top middle button or the top right button. You can also use numbers, the keys are numbered in reading order starting from 1";
+#pragma warning restore 414
+	public KMSelectable[] ProcessTwitchCommand(string command)
+	{
+		if (!command.Trim().ToLowerInvariant().StartsWith("press")) return null;
+
+		command = command.Substring(6);
+		string[] parts = command.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+		bool NoSpace = false;
+		if (parts.Length == 1)
+		{
+			NoSpace = true;
+		}
+		List<int> ButtonsPressed = new List<int> { };
+		List<KMSelectable> Buttons = new List<KMSelectable> { };
+		if (Regex.IsMatch(command.ToUpperInvariant(), "((T|M|B)(L|M|R) )+"))
+		{
+			if (NoSpace) return null;
+			foreach (string part in parts)
+			{
+				int num = 0;
+				switch (part)
+				{
+					case "TL":
+						num = 0;
+						break;
+					case "TM":
+						num = 1;
+						break;
+					case "TR":
+						num = 2;
+						break;
+					case "ML":
+						num = 3;
+						break;
+					case "MM":
+						num = 4;
+						break;
+					case "MR":
+						num = 5;
+						break;
+					case "BL":
+						num = 6;
+						break;
+					case "BM":
+						num = 7;
+						break;
+					case "BR":
+						num = 8;
+						break;
+				}
+				if (ButtonsPressed.Contains(num)) continue;
+
+				ButtonsPressed.Add(num);
+				Buttons.Add(btn[num]);
+			}
+
+			return Buttons.ToArray();
+		} else
+		{
+			foreach (Match buttonIndexString in Regex.Matches(command, "[1-9]"))
+			{
+				int buttonIndex;
+				if (!int.TryParse(buttonIndexString.Value, out buttonIndex))
+				{
+					continue;
+				}
+
+				buttonIndex--;
+
+				if (buttonIndex >= 0 && buttonIndex < 9)
+				{
+					if (ButtonsPressed.Contains(buttonIndex))
+						continue;
+
+					ButtonsPressed.Add(buttonIndex);
+					Buttons.Add(btn[buttonIndex]);
+				}
+			}
+
+			if (Buttons.Count == 0) return null;
+			else return Buttons.ToArray();
+		}
+	}
 }
