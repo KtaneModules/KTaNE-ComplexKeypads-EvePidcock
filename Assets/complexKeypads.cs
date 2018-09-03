@@ -14,9 +14,9 @@ public class complexKeypads : MonoBehaviour
     public KMAudio newAudio;
     public KMBombModule module;
     public KMBombInfo info;
-    public KMModSettings modSettings;
     public KMSelectable[] btn;
     public MeshRenderer[] leds;
+    public KMRuleSeedable RuleSeedable;
     public string[] symbols;
 
     public Material off;
@@ -28,16 +28,17 @@ public class complexKeypads : MonoBehaviour
 
     private bool _isSolved = false, _lightsOn = false;
     public int symbolRow = 1;
-    private int[] one = new int[10] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-    private int[] two = new int[10] { 10, 0, 6, 11, 12, 13, 14, 15, 16, 17 };
-    private int[] three = new int[10] { 18, 17, 11, 13, 2, 8, 1, 10, 19, 9 };
-    private int[] four = new int[10] { 19, 15, 18, 1, 4, 11, 0, 7, 17, 20 };
-    private int[] five = new int[10] { 13, 11, 4, 12, 20, 16, 5, 0, 14, 8 };
+    private int[] one, two, three, four, five;
     public int[] buttonNumbers = new int[9];
     public string[] buttonStrings = new string[9];
     public int[] list = new int[9];
     public int[] buttonPressOrder = new int[9];
     public int[] symbolSet;
+
+    private KMBombInfoExtensions.KnownPortType[] ports = new KMBombInfoExtensions.KnownPortType[6] { KMBombInfoExtensions.KnownPortType.DVI, KMBombInfoExtensions.KnownPortType.Parallel, KMBombInfoExtensions.KnownPortType.PS2, KMBombInfoExtensions.KnownPortType.RJ45, KMBombInfoExtensions.KnownPortType.Serial, KMBombInfoExtensions.KnownPortType.StereoRCA };
+    private int batteriesNeeded;
+    private KMBombInfoExtensions.KnownPortType firstNeeded;
+    private KMBombInfoExtensions.KnownPortType secondNeeded;
 
     public int pressIndex = 0;
 
@@ -75,9 +76,56 @@ public class complexKeypads : MonoBehaviour
         symbolRow = UnityEngine.Random.Range(1, 6);
         Debug.LogFormat("[Complex Keypad #{0}] Random symbol row selected: {1}", _moduleId, symbolRow);
         setupSymbols();
+        setupRuleSeed();
         setupButtons();
         setupPressOrder();
         setupLEDS();
+    }
+
+    void setupRuleSeed()
+    {
+        var rnd = RuleSeedable.GetRNG();
+        if (rnd.Seed == 1)
+        {
+            one = new int[10] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            two = new int[10] { 10, 0, 6, 11, 12, 13, 14, 15, 16, 17 };
+            three = new int[10] { 18, 17, 11, 13, 2, 8, 1, 10, 19, 9 };
+            four = new int[10] { 19, 15, 18, 1, 4, 11, 0, 7, 17, 20 };
+            five = new int[10] { 13, 11, 4, 12, 20, 16, 5, 0, 14, 8 };
+            batteriesNeeded = 2; //more than
+            firstNeeded = ports[1];
+            secondNeeded = ports[0];
+        } else
+        {
+            var options = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+            var batteryOptions = new int[4] { 1, 2, 3, 4 };
+            var rowOptions = new int[5] { 0, 1, 2, 3, 4 };
+            var rows = new int[][] { new int[10], new int[10], new int[10], new int[10], new int[10] };
+
+            options.Shuffle(rnd);
+            batteryOptions.Shuffle(rnd);
+            ports.Shuffle(rnd);
+            rowOptions.Shuffle(rnd);
+
+            rows[0] = new int[10] { options[0], options[1], options[2], options[3], options[4], options[5], options[6], options[7], options[8], options[9] };
+            rows[1] = new int[10] { options[10], options[11], options[12], options[13], options[14], options[15], options[16], options[17], options[18], options[19] };
+            rows[2] = new int[10] { options[20], options[2], options[4], options[6], options[8], options[10], options[12], options[14], options[16], options[18] };
+            rows[3] = new int[10] { options[1], options[3], options[5], options[7], options[9], options[11], options[13], options[15], options[17], options[19] };
+            rows[4] = new int[10] { options[19], options[7], options[4], options[0], options[9], options[13], options[12], options[20], options[16], options[1] };
+
+            one = rows[rowOptions[0]];
+            two = rows[rowOptions[1]];
+            three = rows[rowOptions[2]];
+            four = rows[rowOptions[3]];
+            five = rows[rowOptions[4]];
+
+            batteriesNeeded = batteryOptions[0];
+            firstNeeded = ports[2];
+            secondNeeded = ports[3];
+
+            
+        }
+        Debug.Log(rnd.Seed + ", " + batteriesNeeded + ", " + firstNeeded.ToString() + ", " + secondNeeded.ToString());
     }
 
     void setupLEDS()
@@ -87,6 +135,8 @@ public class complexKeypads : MonoBehaviour
             leds[i].material = off;
         }
     }
+
+
 
     void setupSymbols()
     {
@@ -192,15 +242,15 @@ public class complexKeypads : MonoBehaviour
             buttonStrings[i] = symbols[list[i]];
         }
 
-        if (info.GetBatteryCount() > 2 && info.IsPortPresent(KMBombInfoExtensions.KnownPortType.Parallel))
+        if (info.GetBatteryCount() > batteriesNeeded && info.IsPortPresent(firstNeeded))
         {
             ruleInUse = 1;
-            Debug.LogFormat("[Complex Keypad #{0}] Battery count: {1}. Contains Parallel: True. Rule 1 in use (disregard chart, press left - right on module)", _moduleId, info.GetBatteryCount());
+            Debug.LogFormat("[Complex Keypad #{0}] Battery count: {1}. Contains "+firstNeeded.ToString()+": True. Rule 1 in use (disregard chart, press left - right on module)", _moduleId, info.GetBatteryCount());
         }
-        else if (info.IsPortPresent(KMBombInfoExtensions.KnownPortType.DVI) && info.IsIndicatorOn(KMBombInfoExtensions.KnownIndicatorLabel.BOB))
+        else if (info.IsPortPresent(secondNeeded) && info.IsIndicatorOn(KMBombInfoExtensions.KnownIndicatorLabel.BOB))
         {
             ruleInUse = 2;
-            Debug.LogFormat("[Complex Keypad #{0}] Battery count: {1}. Contains DVI: True. Lit indicator BOB: True. Rule 2 in use (press right - left according to chart)", _moduleId, info.GetBatteryCount());
+            Debug.LogFormat("[Complex Keypad #{0}] Battery count: {1}. Contains " + secondNeeded.ToString() +": True. Lit indicator BOB: True. Rule 2 in use (press right - left according to chart)", _moduleId, info.GetBatteryCount());
         }
         else
         {
@@ -449,4 +499,35 @@ public class complexKeypads : MonoBehaviour
 			else return Buttons.ToArray();
 		}
 	}
+}
+
+public static class Extensions
+{
+
+    // Fisher-Yates Shuffle
+
+    public static IList<T> Shuffle<T>(this IList<T> list, MonoRandom rnd)
+    {
+
+        int i = list.Count;
+
+        while (i > 1)
+        {
+
+            int index = rnd.Next(i);
+
+            i--;
+
+            T value = list[index];
+
+            list[index] = list[i];
+
+            list[i] = value;
+
+        }
+
+        return list;
+
+    }
+
 }

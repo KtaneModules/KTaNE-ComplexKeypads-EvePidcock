@@ -858,6 +858,7 @@ GameObject:
   - component: {fileID: 114965101133649408}
   - component: {fileID: 114125409978905030}
   - component: {fileID: 114127856473842144}
+  - component: {fileID: 114301008314252100}
   m_Layer: 0
   m_Name: complexKeypads
   m_TagString: Untagged
@@ -3214,7 +3215,6 @@ MonoBehaviour:
   newAudio: {fileID: 114297123920480546}
   module: {fileID: 114965101133649408}
   info: {fileID: 114906710225263728}
-  modSettings: {fileID: 0}
   btn:
   - {fileID: 114689564226730032}
   - {fileID: 114762874530967834}
@@ -3235,6 +3235,7 @@ MonoBehaviour:
   - {fileID: 23264372209132518}
   - {fileID: 23825560917510848}
   - {fileID: 23090066628943368}
+  RuleSeedable: {fileID: 114301008314252100}
   symbols:
   - 
   - 
@@ -3453,6 +3454,18 @@ MonoBehaviour:
   m_Script: {fileID: -1675560866, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114301008314252100
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1823661412967028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdc0892b156ab3748bf91fa57573e6b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _seed: 1
 --- !u!114 &114320420723488164
 MonoBehaviour:
   m_ObjectHideFlags: 1
