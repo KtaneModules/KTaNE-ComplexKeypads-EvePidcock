@@ -125,7 +125,6 @@ public class complexKeypads : MonoBehaviour
 
             
         }
-        Debug.Log(rnd.Seed + ", " + batteriesNeeded + ", " + firstNeeded.ToString() + ", " + secondNeeded.ToString());
     }
 
     void setupLEDS()
