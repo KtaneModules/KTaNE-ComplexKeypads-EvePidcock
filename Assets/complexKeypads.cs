@@ -418,18 +418,17 @@ public class complexKeypads : MonoBehaviour
 #pragma warning restore 414
 	public KMSelectable[] ProcessTwitchCommand(string command)
 	{
-		if (!command.Trim().ToLowerInvariant().StartsWith("press")) return null;
+		command = command.Trim().ToUpperInvariant();
+		if (!command.StartsWith("PRESS")) return null;
 
 		command = command.Substring(6);
 		string[] parts = command.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 		bool NoSpace = false;
 		if (parts.Length == 1)
-		{
 			NoSpace = true;
-		}
 		List<int> ButtonsPressed = new List<int> { };
 		List<KMSelectable> Buttons = new List<KMSelectable> { };
-		if (Regex.IsMatch(command.ToUpperInvariant(), "((T|M|B)(L|M|R) )+"))
+		if (Regex.IsMatch(command, "((T|M|B)(L|M|R) )+"))
 		{
 			if (NoSpace) return null;
 			foreach (string part in parts)
