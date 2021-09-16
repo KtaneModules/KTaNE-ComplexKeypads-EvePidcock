@@ -275,7 +275,12 @@ public class complexKeypads : MonoBehaviour
                 Debug.LogFormat("[Complex Keypad #{0}] Button press order: 1:{1}({2}), 2:{3}({4}), 3:{5}({6}), 4:{7}({8}), 5:{9}({10}), 6:{11}({12}), 7:{13}({14}), 8:{15}({16}), 9:{17}({18})", _moduleId, buttonPressOrder[0], buttonStrings[buttonPressOrder[0]], buttonPressOrder[1], buttonStrings[buttonPressOrder[1]], buttonPressOrder[2], buttonStrings[buttonPressOrder[2]], buttonPressOrder[3], buttonStrings[buttonPressOrder[3]], buttonPressOrder[4], buttonStrings[buttonPressOrder[4]], buttonPressOrder[5], buttonStrings[buttonPressOrder[5]], buttonPressOrder[6], buttonStrings[buttonPressOrder[6]], buttonPressOrder[7], buttonStrings[buttonPressOrder[7]], buttonPressOrder[8], buttonStrings[buttonPressOrder[8]]);
                 break;
             case 2:
-                int[] reverseSet = symbolSet;
+                int[] reverseSet = new int[10];
+                int[][] sets = new int[][] { one, two, three, four, five };
+                for(int i = 0; i<10; i++)
+                {
+                    reverseSet[i] = sets[symbolRow - 1][i];
+                }
                 for (int i = 0; i < reverseSet.Length / 2; i++)
                 {
                     int tmp = reverseSet[i];
@@ -387,7 +392,7 @@ public class complexKeypads : MonoBehaviour
         {
             module.HandleStrike();
             Debug.LogFormat("[Complex Keypad #{0}] Incorrect button pressed. Expected: {1}. Recieved: {2}.",_moduleId, buttonPressOrder[pressIndex], btnIndex);
-            Debug.LogFormat("[Complex Keypad #{0}] If you feel that this strike is an error, please contact AAces as soon as possible so we can get this error sorted out. Have a copy of this log file handy. Discord: AAces#0908", _moduleId);
+            Debug.LogFormat("[Complex Keypad #{0}] If you feel that this strike is an error, please contact AAces as soon as possible so we can get this error sorted out. Have a copy of this log file handy. Discord: AAces#2652", _moduleId);
             pressIndex = 0;
             for (int i = 0; i < 9; i++)
             {
